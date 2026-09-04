@@ -1,0 +1,38 @@
+name: Weekly Database Sync
+
+on:
+  schedule:
+    # Runs every Sunday at 02:00 UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  build-db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pymssql pandas
+
+      - name: Run extraction
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+        run: python sync.py
+
+      - name: Compress Database
+        run: zip -9 celestial.sqlite3.zip celestial.sqlite3
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: celestial-database
+          path: celestial.sqlite3.zip
+          retention-days: 30
