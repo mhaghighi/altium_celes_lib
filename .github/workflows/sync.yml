@@ -2,9 +2,11 @@ name: Weekly Database Sync
 
 on:
   schedule:
-    # Runs every Sunday at 02:00 UTC
     - cron: '0 2 * * 0'
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+  workflow_dispatch:
+
+permissions:
+  contents: write  # Needed to create and update releases
 
 jobs:
   build-db:
@@ -30,9 +32,16 @@ jobs:
       - name: Compress Database
         run: zip -9 celestial.sqlite3.zip celestial.sqlite3
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Publish to GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: celestial-database
-          path: celestial.sqlite3.zip
-          retention-days: 30
+          tag_name: latest
+          name: "Celestial Database Latest Mirror"
+          body: |
+            Automated weekly clone of the Celestial Altium Library database.
+            
+            ### Setup
+            1. Download `celestial.sqlite3.zip` below.
+            2. Extract to your local drive.
+            3. Point your Altium `.DbLib` connection string to the extracted SQLite file.
+          files: celestial.sqlite3.zip
