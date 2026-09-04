@@ -41,7 +41,9 @@ jobs:
             Automated weekly clone of the Celestial Altium Library database.
             
             ### Setup
-            1. Download `celestial.sqlite3.zip` below.
-            2. Extract to your local drive.
-            3. Point your Altium `.DbLib` connection string to the extracted SQLite file.
-          files: celestial.sqlite3.zip
+            1. Download `celestial.sqlite3.zip` and the sample `.DbLib` file below.
+            2. Extract `celestial.sqlite3.zip` to your local drive.
+            3. Open the `.DbLib` file in Altium Designer, update the connection path to your local `.sqlite3` file, and connect.
+          files: |
+            celestial.sqlite3.zip
+            your_file_name.DbLib
